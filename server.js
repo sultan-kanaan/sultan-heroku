@@ -188,7 +188,7 @@ function errorHandler(error, req, res) {
 }
 client.connect()
     .then(() => {
-        app.listen(3000, () => {
+        app.listen(process.env.PORT || 5000, () => {
             console.log("Listen on 3000");
         });
     });
