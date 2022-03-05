@@ -23,11 +23,11 @@ app.get('/trending', trendingPage);
 app.get('/nowplaying', movieNow_playing);
 app.get('/toprated', movieTop_rated);
 app.get('/search', searchPage);
-// app.post('/addFavorat', addFavorat);
-// app.get("/getFavorat", getFavorat);
-// app.put("/updateFavmovie/:id", updateFavmovie);
-// app.delete("/deleteFavmovie/:id", deleteFavmovie);
-// app.get('/getMovie/:id', getMovieById);
+app.post('/addFavorat', addFavorat);
+app.get("/getFavorat", getFavorat);
+app.put("/updateFavmovie/:id", updateFavmovie);
+app.delete("/deleteFavmovie/:id", deleteFavmovie);
+app.get('/getMovie/:id', getMovieById);
 app.use("*", notFoundHandler);
 app.use(errorHandler);
 
@@ -115,65 +115,66 @@ function movieTop_rated(req, res) {
         });
 
 }
-// function addFavorat(req, res) {
-//     let movie = req.body;
-//     const sql = `INSERT INTO postgres( title,release_date, poster_path, overview,comment) VALUES($1, $2, $3, $4,$5)RETURNING * ;`
-//     let values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment];
+const sql = `UPDATE postgres SET title=$1, release_date=$2, poster_path=$3, overview=$4, comment=$5 WHERE id=$6  RETURNING *;`
+const values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment, id];
 
-//     client.query(sql, values).then((data) => {
+function addFavorat(req, res) {
+    let movie = req.body;
+    const sql = `INSERT INTO postgres( title,release_date, poster_path, overview,comment) VALUES($1, $2, $3, $4,$5)RETURNING * ;`
+    let values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment];
 
-//         return res.status(201).json(data.rows);
-//     }).catch(error => {
-//         errorHandler(error, req, res);
-//     })
-// };
-// function getFavorat(req, res) {
+    client.query(sql, values).then((data) => {
 
-//     const sql = `SELECT * FROM postgres`;
+        return res.status(201).json(data.rows);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+};
+function getFavorat(req, res) {
 
-//     client.query(sql).then(data => {
-//         return res.status(200).json(data.rows);
-//     }).catch(error => {
-//         errorHandler(error, req, res);
-//     })
-// }
-// function updateFavmovie(req, res) {
-//     const id = req.params.id;
-//     const movie = req.body;
-//     const sql = `UPDATE postgres SET comment=$1 WHERE id=${id} RETURNING *;`
-//     const values = [movie.comment];
-//     client.query(sql, values).then(data => {
-//         return res.status(200).json(data.rows);
-//     }).catch(error => {
-//         errorHandler(error, req, res);
-//     })
-// };
-// function deleteFavmovie(req, res) {
-//     const id = req.params.id;
-//     const sql = `DELETE FROM postgres WHERE id=${id};`
+    const sql = `SELECT * FROM postgres`;
 
-//     client.query(sql).then(() => {
-//         return res.status(204).json([]);
-//     }).catch(error => {
-//         errorHandler(error, req, res);
-//     })
-// }
-// function getMovieById(req, res) {
-//     const id = req.params.id;
+    client.query(sql).then(data => {
+        return res.status(200).json(data.rows);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+}
+function updateFavmovie(req, res) {
+    const id = req.params.id;
+    const movie = req.body;
+    const sql = `UPDATE postgres SET title=$1, release_date=$2, poster_path=$3, overview=$4, comment=$5 WHERE id=$6  RETURNING *;`
+    const values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment, id];
+    client.query(sql, values).then(data => {
+        return res.status(200).json(data.rows);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+};
+function deleteFavmovie(req, res) {
+    const id = req.params.id;
+    const sql = `DELETE FROM postgres WHERE id=${id};`
 
-//     const sql = `SELECT * FROM postgres  WHERE id=$1 ;`;
-//     const value = [id];
+    client.query(sql).then(() => {
+        return res.status(204).json([]);
+    }).catch(error => {
+        errorHandler(error, req, res);
+    })
+}
+function getMovieById(req, res) {
+    const id = req.params.id;
 
-//     client.query(sql, value)
-//         .then((result) => {
-//             return res.status(200).json(result.rows);
-//         }).catch((error) => {
-//             errorHandler(error, req, res);
-//         })
+    const sql = `SELECT * FROM postgres  WHERE id=$1 ;`;
+    const value = [id];
 
-// }
+    client.query(sql, value)
+        .then((result) => {
+            return res.status(200).json(result.rows);
+        }).catch((error) => {
+            errorHandler(error, req, res);
+        })
 
-
+}
 
 function notFoundHandler(req, res) {
 
