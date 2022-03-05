@@ -115,9 +115,6 @@ function movieTop_rated(req, res) {
         });
 
 }
-const sql = `UPDATE postgres SET title=$1, release_date=$2, poster_path=$3, overview=$4, comment=$5 WHERE id=$6  RETURNING *;`
-const values = [movie.title, movie.release_date, movie.poster_path, movie.overview, movie.comment, id];
-
 function addFavorat(req, res) {
     let movie = req.body;
     const sql = `INSERT INTO postgres( title,release_date, poster_path, overview,comment) VALUES($1, $2, $3, $4,$5)RETURNING * ;`
