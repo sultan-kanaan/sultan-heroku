@@ -1,8 +1,10 @@
 'use strict';
 
 const express = require("express");
+const cors = require('cors');
 const myData = require("./movieData/Data.json")
 const app = express();
+app.use(cors());
 const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
